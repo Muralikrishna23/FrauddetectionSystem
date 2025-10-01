@@ -1,0 +1,290 @@
+
+# Git files
+.git
+.gitignore
+.gitattributes
+.gitmodules
+
+# Documentation
+README.md
+*.md
+docs/
+LICENSE
+CHANGELOG*
+
+# Docker files themselves  
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.iml
+*.iws
+*.ipr
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Maven
+target/
+!target/*.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+pom.xml.bak
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+gradle/
+gradlew
+gradlew.bat
+
+# Java
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+!target/*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+
+# Spring Boot
+spring-boot-*.log
+application-*.log
+
+# Logs
+logs/
+*.log
+log/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Application specific
+application-local.yml
+application-local.properties
+application-dev.yml
+application-dev.properties
+config/application-local.yml
+
+# Test files
+src/test/resources/application-test.yml
+*-test.yml
+*-test.properties
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+!target/*.jar
+*.rar
+*.tar
+*.zip
+
+# Security sensitive files
+*.key
+*.pem
+*.p12
+*.crt
+*.csr
+secrets/
+private/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache and build artifacts  
+.cache/
+dist/
+out/
+build/
+target/
+!target/*.jar
+
+# Scripts that shouldn't be in container
+scripts/
+*.sh
+*.bat
+
+# Development tools
+.tool-versions
+.nvmrc
+.python-version
+
+# Docker development files
+docker-compose.override.yml
+docker-compose.dev.yml
+docker-compose.local.yml
+
+# Kubernetes files
+k8s/
+kubernetes/
+*.yaml
+*.yml
+!docker-compose.yml
+
+# Monitoring and config that shouldn't be copied
+prometheus/
+grafana/  
+monitoring/
+
+# Large files that shouldn't be in image
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.wmv
+*.flv
+*.webm
+*.mp3
+*.wav
+*.flac
+*.aac
+
+# Compiled source
+*.com
+*.exe
+*.o
+*.so
+*.dll
+
+# Packages
+*.deb
+*.rpm
+*.msi
+*.dmg
+*.pkg
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+
+# CDT- autotools
+.autotools
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
+# Annotation Processing
+.apt_generated/
+.apt_generated_test/
+
+# Scala IDE specific (Scala & Java development for Eclipse)
+.cache-main
+.scala_dependencies
+.worksheet

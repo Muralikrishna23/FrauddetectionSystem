@@ -1,0 +1,29 @@
+FROM openjdk:17-jre-slim
+
+# Set working directory
+WORKDIR /app
+
+# Create app user
+RUN addgroup --system fraud && adduser --system --group fraud
+
+# Copy JAR file
+COPY target/spring-boot-fraud-detection-*.jar app.jar
+
+# Create logs directory
+RUN mkdir -p /var/log/fraud-detection && chown -R fraud:fraud /var/log/fraud-detection
+
+# Change ownership
+RUN chown -R fraud:fraud /app
+
+# Switch to app user
+USER fraud
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/api/v1/actuator/health || exit 1
+
+# Run application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

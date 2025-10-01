@@ -1,0 +1,121 @@
+# Global Prometheus Configuration
+global:
+  scrape_interval: 15s          # Set the scrape interval to every 15 seconds
+  evaluation_interval: 15s      # Evaluate rules every 15 seconds
+  external_labels:
+    monitor: 'fraud-detection-monitor'
+
+# Alertmanager configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'
+rule_files:
+  # - "fraud_detection_rules.yml"
+
+# Scrape configuration for different services
+scrape_configs:
+  
+  # Fraud Detection Application Metrics
+  - job_name: 'fraud-detection-app'
+    static_configs:
+      - targets: ['fraud-detection-app:8080']
+    metrics_path: '/api/v1/actuator/prometheus'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    honor_labels: true
+    params:
+      format: ['prometheus']
+
+  # Application Health Check  
+  - job_name: 'fraud-detection-health'
+    static_configs:
+      - targets: ['fraud-detection-app:8080']
+    metrics_path: '/api/v1/actuator/health'
+    scrape_interval: 60s
+    scrape_timeout: 5s
+
+  # JVM Metrics (included in Spring Boot Actuator)
+  - job_name: 'fraud-detection-jvm'
+    static_configs:
+      - targets: ['fraud-detection-app:8080']
+    metrics_path: '/api/v1/actuator/prometheus'
+    scrape_interval: 30s
+    params:
+      match[]:
+        - 'jvm_*'
+        - 'process_*'
+        - 'system_*'
+
+  # Custom Fraud Detection Metrics
+  - job_name: 'fraud-detection-custom'
+    static_configs:
+      - targets: ['fraud-detection-app:8080']
+    metrics_path: '/api/v1/actuator/prometheus'
+    scrape_interval: 15s
+    params:
+      match[]:
+        - 'fraud_*'
+        - 'transaction_*'
+        - 'alert_*'
+
+  # MySQL Database Metrics (if mysql_exporter is available)
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql:3306']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    # Note: Requires mysql_exporter to be running
+
+  # Redis Metrics (if redis_exporter is available)  
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    # Note: Requires redis_exporter to be running
+
+  # Kafka Metrics (if kafka_exporter is available)
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['kafka:9092']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    # Note: Requires kafka_exporter to be running
+
+  # Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+
+  # Node Exporter (if available for system metrics)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+    # Note: Add node-exporter service to docker-compose if needed
+
+# Storage configuration
+#storage:
+#  tsdb:
+#    retention.time: 15d     # Keep metrics for 15 days
+#    retention.size: 512MB   # Maximum storage size
+
+# Recording rules for fraud detection metrics
+# rule_files:
+#   - "fraud_rules.yml"
+
+# Example recording rules (create fraud_rules.yml file):
+# groups:
+#   - name: fraud_detection
+#     rules:
+#       - record: fraud_rate_5m
+#         expr: rate(fraud_transactions_total[5m])
+#       - record: transaction_rate_5m  
+#         expr: rate(transactions_total[5m])
+#       - record: alert_rate_5m
+#         expr: rate(fraud_alerts_total[5m])
