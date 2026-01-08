@@ -38,7 +38,7 @@ public interface FraudAlertRepository extends JpaRepository<FraudAlert, Long> {
         return countAlertsBySeverityAndStatus(severity, FraudAlert.AlertStatus.OPEN);
     }
     
-    // ⭐ NEW: Add this method for blockchain integration
+    
     @Query("SELECT COUNT(a) FROM FraudAlert a WHERE a.status = :status")
     Long countByStatus(@Param("status") FraudAlert.AlertStatus status);
 }

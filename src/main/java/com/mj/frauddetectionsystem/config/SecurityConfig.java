@@ -25,9 +25,8 @@ public class SecurityConfig {
                 .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
             )
             .authorizeHttpRequests(authz -> authz
-                // H2 Console - use AntPathRequestMatcher
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                
+               
+               
                 // Fraud Detection endpoints
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/fraud-detection/analyze")).hasRole("USER")
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/fraud-detection/statistics")).hasRole("ADMIN")
@@ -53,7 +52,7 @@ public class SecurityConfig {
             )
             .httpBasic(httpBasic -> {});
 
-        // Allow H2 Console in iframe
+        
         http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();

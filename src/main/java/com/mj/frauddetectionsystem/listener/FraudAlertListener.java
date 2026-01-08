@@ -24,7 +24,7 @@ public class FraudAlertListener {
             // Implement blocking logic here
         }
         
-        // Here you could implement:
+        // we can implement:
         // - Send email notifications
         // - SMS alerts
         // - Push notifications to mobile apps

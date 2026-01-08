@@ -41,10 +41,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-/**
- * Core service for fraud detection operations
- * Handles transaction analysis, user management, and fraud statistics
- */
+
 @Service
 @Transactional
 public class FraudDetectionService {
@@ -52,7 +49,7 @@ public class FraudDetectionService {
     private static final Logger logger = LoggerFactory.getLogger(FraudDetectionService.class);
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    // Repository Dependencies
+    
     @Autowired
     private TransactionRepository transactionRepository;
     
@@ -65,15 +62,15 @@ public class FraudDetectionService {
     @Autowired
     private FraudAlertRepository fraudAlertRepository;
     
-    // Core Fraud Detection Engine
+  
     @Autowired
     private FraudDetectionEngine fraudDetectionEngine;
     
-    // Optional Kafka Integration
+  
     @Autowired(required = false)
     private KafkaTemplate<String, Object> kafkaTemplate;
 
-    // Configuration Properties
+    
     @Value("${fraud.detection.alerts.kafka.enabled:false}")
     private boolean kafkaAlertsEnabled;
 
@@ -89,9 +86,7 @@ public class FraudDetectionService {
     @Value("${fraud.detection.ml.confidence-threshold:0.5}")
     private BigDecimal mlConfidenceThreshold;
 
-    // ===========================================
-    // CORE FRAUD DETECTION METHODS
-    // ===========================================
+   
 
     /**
      * Process a single transaction for fraud detection
@@ -206,10 +201,7 @@ public class FraudDetectionService {
         return CompletableFuture.completedFuture(responses);
     }
 
-    // ===========================================
-    // USER TRANSACTION RETRIEVAL METHODS
-    // ===========================================
-
+  
     /**
      * Get all transactions for a specific user (cached)
      * 
@@ -255,10 +247,6 @@ public class FraudDetectionService {
         
         return transactionRepository.findUserTransactionsAfter(user, cutoffTime);
     }
-
-    // ===========================================
-    // FRAUD ALERT MANAGEMENT METHODS
-    // ===========================================
 
     /**
      * Get fraud alerts for a specific user
@@ -328,10 +316,7 @@ public class FraudDetectionService {
         logger.info("Fraud alert {} resolved by {}", alertId, resolvedBy);
     }
 
-    // ===========================================
-    // STATISTICS AND REPORTING METHODS
-    // ===========================================
-
+ 
     /**
      * Get comprehensive fraud detection statistics
      * 
@@ -416,10 +401,7 @@ public class FraudDetectionService {
         return new FraudStatistics(totalTransactions, fraudulentTransactions, totalTransactions, fraudulentTransactions);
     }
 
-    // ===========================================
-    // USER PROFILE MANAGEMENT
-    // ===========================================
-
+    
     /**
      * Update user profile based on transaction patterns
      * 
@@ -436,13 +418,13 @@ public class FraudDetectionService {
                 user.setProfile(profile);
             }
             
-            // Update average spending
+            
             BigDecimal currentAverage = transactionRepository.getAverageTransactionAmount(user);
             if (currentAverage != null) {
                 profile.setAverageMonthlySpending(currentAverage.multiply(new BigDecimal("30"))); // Rough monthly estimate
             }
             
-            // Update risk score based on recent fraud activity
+           
             List<Transaction> recentTransactions = getRecentUserTransactions(user.getUserId(), 24 * 30); // Last 30 days
             long recentFraudCount = recentTransactions.stream().mapToLong(t -> t.isFraudulent() ? 1 : 0).sum();
             
@@ -452,7 +434,7 @@ public class FraudDetectionService {
                 profile.setRiskScore(riskScore);
             }
             
-            // Update preferred locations and payment methods
+           
             updateUserPreferences(profile, recentTransactions);
             
             logger.debug("Updated user profile for user: {}", user.getUserId());
@@ -462,10 +444,7 @@ public class FraudDetectionService {
         }
     }
 
-    // ===========================================
-    // PRIVATE HELPER METHODS
-    // ===========================================
-
+   
     /**
      * Validate transaction request
      */
@@ -739,10 +718,6 @@ public class FraudDetectionService {
             logger.warn("Error updating risk score for user {}: {}", user.getUserId(), e.getMessage());
         }
     }
-
-    // ===========================================
-    // ADMINISTRATIVE METHODS
-    // ===========================================
 
     /**
      * Clear fraud statistics cache

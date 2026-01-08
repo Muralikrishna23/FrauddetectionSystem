@@ -30,7 +30,7 @@ public class FraudDetectionResponse {
     @Schema(description = "Processing time in milliseconds", example = "45")
     private Long processingTimeMs;
     
-    // ⭐ NEW: Blockchain fields
+    //  Blockchain fields
     @Schema(description = "Blockchain block hash", example = "0000a1b2c3d4e5f6...")
     private String blockHash;
     
@@ -57,7 +57,7 @@ public class FraudDetectionResponse {
         this.addedToBlockchain = false; // Default
     }
 
-    // Existing getters and setters
+    //  getters and setters
     public String getTransactionId() { return transactionId; }
     public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 
@@ -79,7 +79,7 @@ public class FraudDetectionResponse {
     public Long getProcessingTimeMs() { return processingTimeMs; }
     public void setProcessingTimeMs(Long processingTimeMs) { this.processingTimeMs = processingTimeMs; }
     
-    // ⭐ NEW: Blockchain getters and setters
+    // Blockchain getters and setters
     public String getBlockHash() { return blockHash; }
     public void setBlockHash(String blockHash) { this.blockHash = blockHash; }
     
