@@ -37,3 +37,16 @@ build/
 .git_ssh.pub
 .gitignore
 .gitattributes
+
+
+# SSH keys (NEVER commit these!)
+*_ssh
+*_ssh.*
+id_rsa
+id_ed25519
+*.pub  # only if not needed for deployment (generally avoid)
+
+# Logs
+logs/
+*.log
+*.gz
