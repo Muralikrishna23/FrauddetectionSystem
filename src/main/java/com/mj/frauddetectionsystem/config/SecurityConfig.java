@@ -1,3 +1,4 @@
+
 package com.mj.frauddetectionsystem.config;
 
 import org.springframework.context.annotation.Bean;
@@ -21,21 +22,39 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
             )
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                .requestMatchers("/fraud-detection/analyze").hasRole("USER")
-                .requestMatchers("/fraud-detection/statistics").hasRole("ADMIN")
-                .requestMatchers("/fraud-detection/alerts/**").hasRole("ANALYST")
-                .requestMatchers("/actuator/**").hasRole("ADMIN")
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                // H2 Console - use AntPathRequestMatcher
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                
+                // Fraud Detection endpoints
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/fraud-detection/analyze")).hasRole("USER")
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/fraud-detection/statistics")).hasRole("ADMIN")
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/fraud-detection/alerts/**")).hasRole("ANALYST")
+                
+                // Blockchain endpoints
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/blockchain/stats")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/blockchain/initialize")).hasRole("ADMIN")
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/blockchain/**")).hasRole("ANALYST")
+                
+                // Smart Contract endpoints
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/smart-contracts/create")).hasRole("ADMIN")
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/smart-contracts/**")).hasRole("ANALYST")
+                
+                // Actuator
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**")).hasRole("ADMIN")
+                
+                // Swagger
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/api-docs/**")).permitAll()
+                
                 .anyRequest().authenticated()
             )
-            .httpBasic();
+            .httpBasic(httpBasic -> {});
 
-        // Allow H2 Console in iframe — SECURE
-        http.headers().frameOptions().sameOrigin();
+        // Allow H2 Console in iframe
+        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }

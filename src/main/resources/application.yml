@@ -1,17 +1,18 @@
+
+
 spring:
   application:
     name: fraud-detection-system
   
-  # Profile Configuration
   profiles:
     active: dev
   
-  # Database Configuration
+  # MySQL Database Configuration (CHANGED FROM H2)
   datasource:
-    url: jdbc:h2:mem:frauddb;DB_CLOSE_DELAY=-1;MODE=MySQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
+    url: jdbc:mysql://localhost:3306/fraud_detection?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root  # CHANGE THIS TO YOUR MYSQL PASSWORD
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -22,7 +23,7 @@ spring:
   # JPA/Hibernate Configuration
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update  # CHANGED FROM create-drop
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
@@ -30,30 +31,19 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQL8Dialect  
         jdbc:
           batch_size: 20
           fetch_size: 50
-    defer-datasource-initialization: true
   
-  # H2 Database Console
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        web-allow-others: true
-        trace: false
-  
+
   # SQL Initialization
   sql:
     init:
       mode: always
       data-locations: classpath:data.sql
-      schema-locations: classpath:schema.sql
-      continue-on-error: false
+      continue-on-error: true 
   
-  # Caching Configuration
   cache:
     type: simple
     cache-names:
@@ -63,7 +53,6 @@ spring:
     caffeine:
       spec: maximumSize=1000,expireAfterWrite=300s
   
-  # Jackson JSON Configuration
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -73,7 +62,6 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
   
-  # Kafka Configuration (Optional)
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -90,7 +78,7 @@ spring:
         spring.json.trusted.packages: "com.mj.frauddetectionsystem.dto"
         spring.json.value.default.type: com.mj.frauddetectionsystem.dto.FraudAlertMessage
 
-# Fraud Detection System Configuration
+# Fraud Detection Rules
 fraud:
   detection:
     rules:
@@ -129,252 +117,77 @@ fraud:
     alerts:
       email:
         enabled: false
-        smtp-host: smtp.gmail.com
-        smtp-port: 587
-        username: ${EMAIL_USERNAME:}
-        password: ${EMAIL_PASSWORD:}
       kafka:
         enabled: true
         topic: fraud-alerts
         batch-size: 100
-      webhook:
-        enabled: false
-        url: ${WEBHOOK_URL:}
 
-# Management and Monitoring
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,prometheus,fraud-stats,env,configprops,beans,mappings
-      base-path: /actuator
-      cors:
-        allowed-origins: "*"
-        allowed-methods: GET,POST
-  endpoint:
-    health:
-      show-details: always
-      show-components: always
-    fraud-stats:
-      enabled: true
-      cache:
-        time-to-live: 60s
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
-  info:
-    env:
-      enabled: true
-    java:
-      enabled: true
-    os:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-      environment: ${spring.profiles.active}
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-# Server Configuration
-server:
-  port: 8080
-  servlet:
-    context-path: /api/v1
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-  compression:
+# Blockchain Configuration
+blockchain:
+  mining:
+    difficulty: 4
+  validation:
     enabled: true
-    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
-  error:
-    include-message: always
-    include-binding-errors: always
-    #include-stacktrace: on_param
-    include-exception: false
+    auto-validate: true
+  smart-contracts:
+    enabled: true
+    max-contracts: 100
+    default-threshold: 0.7
 
-# Logging Configuration
-logging:
-  level:
-    com.mj.frauddetectionsystem: INFO
-    org.springframework.security: WARN
-    org.springframework.kafka: WARN
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.web: WARN
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: logs/fraud-detection.log
-    max-size: 10MB
-    max-history: 30
-    total-size-cap: 1GB
-
-# Custom Application Properties
-app:
-  name: Fraud Detection System
-  version: 1.0.0
-  description: Enterprise Fraud Detection System with ML capabilities
-  contact:
-    email: admin@frauddetection.com
-    phone: +1-555-FRAUD-01
-  security:
-    jwt:
-      expiration: 86400000 # 24 hours
-      refresh-expiration: 604800000 # 7 days
-  database:
-    connection-pool:
-      initial-size: 5
-      max-active: 20
-      max-idle: 10
-      min-idle: 5
-  cache:
-    default-ttl: 300 # 5 minutes
-    max-entries: 10000
-
----
-# Development Profile
-spring:
-  config:
-    activate:
-      on-profile: dev
-  
-  datasource:
-    url: jdbc:h2:mem:frauddb_dev;DB_CLOSE_DELAY=-1;MODE=MySQL
-  
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  
-  kafka:
-    bootstrap-servers: localhost:9092
-
-logging:
-  level:
-    com.mj.frauddetectionsystem: DEBUG
-    org.hibernate.SQL: DEBUG
-
-fraud:
-  detection:
-    rules:
-      amount:
-        threshold: 5000.0  # Lower threshold for testing
-    alerts:
-      email:
-        enabled: false
-      kafka:
-        enabled: false
-
----
-# Production Profile
-spring:
-  config:
-    activate:
-      on-profile: prod
-  
-  datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/frauddb}
-    username: ${DB_USERNAME:fraud_user}
-    password: ${DB_PASSWORD:fraud_password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 50
-      minimum-idle: 10
-      connection-timeout: 30000
-  
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: false
-  
-  cache:
-    type: redis
-  
-#  redis:
-#    host: ${REDIS_HOST:localhost}
-#    port: ${REDIS_PORT:6379}
-#    password: ${REDIS_PASSWORD:}
-#    timeout: 2000ms
-#    lettuce:
-#      pool:
-#        max-active: 8
-#        max-idle: 8
-#        min-idle: 0
-  
-  kafka:
-    bootstrap-servers: ${KAFKA_BROKERS:localhost:9092}
-    producer:
-      retries: 3
-      batch-size: 16384
-      linger-ms: 5
-      buffer-memory: 33554432
-
-server:
-  port: ${SERVER_PORT:8080}
-  servlet:
-    context-path: /api/v1
-
-logging:
-  level:
-    com.mj.frauddetectionsystem: WARN
-    root: WARN
-  file:
-    name: /var/log/fraud-detection/application.log
-
+# Management
 management:
   endpoints:
     web:
       exposure:
         include: health,info,metrics,prometheus,fraud-stats
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
 
-fraud:
-  detection:
-    alerts:
-      email:
-        enabled: ${EMAIL_ENABLED:true}
-      kafka:
-        enabled: ${KAFKA_ENABLED:true}
+# Server
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+# Logging
+logging:
+  level:
+    com.mj.frauddetectionsystem: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
 ---
-# Test Profile
+# Dev Profile
 spring:
   config:
     activate:
-      on-profile: test
-  
+      on-profile: dev
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
-    username: sa
-    password: 
-  
+    url: jdbc:mysql://localhost:3306/fraud_detection?createDatabaseIfNotExist=true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+---
+# Prod Profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/fraud_detection}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: false
-  
-  kafka:
-    bootstrap-servers: ${spring.embedded.kafka.brokers}
-
-logging:
-  level:
-    com.mj.frauddetectionsystem: WARN
-    org.springframework.kafka: WARN
-
-fraud:
-  detection:
-    alerts:
-      email:
-        enabled: false
-      kafka:
-        enabled: false

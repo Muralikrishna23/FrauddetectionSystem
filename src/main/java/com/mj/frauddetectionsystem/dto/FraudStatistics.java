@@ -1,8 +1,8 @@
 package com.mj.frauddetectionsystem.dto;
 
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public class FraudStatistics {
     private long totalTransactions;
@@ -12,7 +12,11 @@ public class FraudStatistics {
     private long todayFraudulent;
     private BigDecimal todayFraudRate;
     private LocalDateTime lastUpdated;
+    
+    // ⭐ NEW: Blockchain statistics
+    private Map<String, Object> blockchainStats;
 
+    // Existing constructor
     public FraudStatistics(long totalTransactions, long fraudulentTransactions, 
                          long todayTransactions, long todayFraudulent) {
         this.totalTransactions = totalTransactions;
@@ -30,7 +34,7 @@ public class FraudStatistics {
         this.lastUpdated = LocalDateTime.now();
     }
 
-    // Getters and setters
+    // Existing getters and setters
     public long getTotalTransactions() { return totalTransactions; }
     public void setTotalTransactions(long totalTransactions) { this.totalTransactions = totalTransactions; }
 
@@ -51,4 +55,10 @@ public class FraudStatistics {
 
     public LocalDateTime getLastUpdated() { return lastUpdated; }
     public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
+    
+    // ⭐ NEW: Blockchain getter and setter
+    public Map<String, Object> getBlockchainStats() { return blockchainStats; }
+    public void setBlockchainStats(Map<String, Object> blockchainStats) { 
+        this.blockchainStats = blockchainStats; 
+    }
 }

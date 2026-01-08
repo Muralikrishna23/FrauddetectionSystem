@@ -1,10 +1,10 @@
 package com.mj.frauddetectionsystem.dto;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Schema(description = "Response object containing fraud analysis results")
 public class FraudDetectionResponse {
@@ -29,7 +29,21 @@ public class FraudDetectionResponse {
     
     @Schema(description = "Processing time in milliseconds", example = "45")
     private Long processingTimeMs;
+    
+    // ⭐ NEW: Blockchain fields
+    @Schema(description = "Blockchain block hash", example = "0000a1b2c3d4e5f6...")
+    private String blockHash;
+    
+    @Schema(description = "Blockchain block index", example = "42")
+    private Long blockIndex;
+    
+    @Schema(description = "Whether transaction was added to blockchain", example = "true")
+    private boolean addedToBlockchain;
+    
+    @Schema(description = "Smart contract actions executed")
+    private List<Map<String, Object>> smartContractActions;
 
+    // Constructors
     public FraudDetectionResponse() {}
 
     public FraudDetectionResponse(String transactionId, boolean isFraudulent, 
@@ -40,9 +54,10 @@ public class FraudDetectionResponse {
         this.triggeredRules = triggeredRules;
         this.status = isFraudulent ? "FLAGGED" : "APPROVED";
         this.processedAt = LocalDateTime.now();
+        this.addedToBlockchain = false; // Default
     }
 
-    // Getters and setters
+    // Existing getters and setters
     public String getTransactionId() { return transactionId; }
     public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 
@@ -63,4 +78,23 @@ public class FraudDetectionResponse {
 
     public Long getProcessingTimeMs() { return processingTimeMs; }
     public void setProcessingTimeMs(Long processingTimeMs) { this.processingTimeMs = processingTimeMs; }
+    
+    // ⭐ NEW: Blockchain getters and setters
+    public String getBlockHash() { return blockHash; }
+    public void setBlockHash(String blockHash) { this.blockHash = blockHash; }
+    
+    public Long getBlockIndex() { return blockIndex; }
+    public void setBlockIndex(Long blockIndex) { this.blockIndex = blockIndex; }
+    
+    public boolean isAddedToBlockchain() { return addedToBlockchain; }
+    public void setAddedToBlockchain(boolean addedToBlockchain) { 
+        this.addedToBlockchain = addedToBlockchain; 
+    }
+    
+    public List<Map<String, Object>> getSmartContractActions() { 
+        return smartContractActions; 
+    }
+    public void setSmartContractActions(List<Map<String, Object>> smartContractActions) { 
+        this.smartContractActions = smartContractActions; 
+    }
 }

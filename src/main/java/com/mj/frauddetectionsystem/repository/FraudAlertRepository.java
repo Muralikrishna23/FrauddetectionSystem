@@ -1,8 +1,6 @@
 package com.mj.frauddetectionsystem.repository;
 
-
 import com.mj.frauddetectionsystem.model.FraudAlert;
-import com.mj.frauddetectionsystem.model.Transaction;
 import com.mj.frauddetectionsystem.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +21,6 @@ public interface FraudAlertRepository extends JpaRepository<FraudAlert, Long> {
     List<FraudAlert> findByStatus(FraudAlert.AlertStatus status);
     List<FraudAlert> findBySeverity(FraudAlert.Severity severity);
 
-    // ✅ No @Query needed — use method above
     default List<FraudAlert> findOpenAlerts() {
         return findByStatus(FraudAlert.AlertStatus.OPEN);
     }
@@ -31,7 +28,6 @@ public interface FraudAlertRepository extends JpaRepository<FraudAlert, Long> {
     @Query("SELECT a FROM FraudAlert a WHERE a.alertTime BETWEEN :startTime AND :endTime ORDER BY a.alertTime DESC")
     List<FraudAlert> findAlertsInTimeRange(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 
-    // ✅ Use parameters for both dynamic values
     @Query("SELECT COUNT(a) FROM FraudAlert a WHERE a.severity = :severity AND a.status = :status")
     Long countAlertsBySeverityAndStatus(
         @Param("severity") FraudAlert.Severity severity,
@@ -41,4 +37,8 @@ public interface FraudAlertRepository extends JpaRepository<FraudAlert, Long> {
     default Long countOpenAlertsBySeverity(FraudAlert.Severity severity) {
         return countAlertsBySeverityAndStatus(severity, FraudAlert.AlertStatus.OPEN);
     }
+    
+    // ⭐ NEW: Add this method for blockchain integration
+    @Query("SELECT COUNT(a) FROM FraudAlert a WHERE a.status = :status")
+    Long countByStatus(@Param("status") FraudAlert.AlertStatus status);
 }

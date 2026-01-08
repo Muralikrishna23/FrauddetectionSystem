@@ -1,6 +1,5 @@
 package com.mj.frauddetectionsystem.repository;
 
-
 import com.mj.frauddetectionsystem.model.Transaction;
 import com.mj.frauddetectionsystem.model.User;
 import org.springframework.data.domain.Page;
@@ -40,4 +39,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     
     @Query("SELECT COUNT(t) FROM Transaction t WHERE t.isFraudulent = true AND t.timestamp >= :startTime AND t.timestamp <= :endTime")
     Long countFraudulentTransactionsInTimeRange(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+    
+    // ⭐ NEW: Add this method for blockchain integration
+    @Query("SELECT COUNT(t) FROM Transaction t WHERE t.isFraudulent = true")
+    Long countByIsFraudulentTrue();
 }
