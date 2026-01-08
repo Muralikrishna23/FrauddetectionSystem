@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+### git ###
+.git_ssh
+.git_ssh_known_hosts
+.git_ssh.pub
+.gitignore
+.gitattributes
